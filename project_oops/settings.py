@@ -25,12 +25,16 @@ SECRET_KEY = 'django-insecure-2mww7g#$jvt!vchkoxxlaaxaz-ob+eo_(g(v0xipn)+r3y1tob
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'main',
+    'rate',
+    'api',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -54,7 +58,7 @@ ROOT_URLCONF = 'project_oops.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR/'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -105,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
@@ -121,3 +125,16 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# 추가
+
+STATICFILES_DIRS = (BASE_DIR/'static',)
+# STATIC_ROOT = (BASE_DIR/'.static_root')# 배포할 때 사용
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR/'media' # 사진
+
+# AUTH_USER_MODEL = # 회원가입, 유저관리
+# LOGGING = 
+
+ALLOWED_HOSTS = ['*']

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+    </head>
+
+    <body>
+<!-- 내가 한거
+      <div>
+        <div>rate page </div>
+        <label for="comment">Comment :</label>
+        <input type="text" id="comment" name="comment" maxlength="100" size="10">
+
+        <label for="rating">Stars :</label>
+        <input type="text" id="rating" name="rating" size="10">
+
+        <label for="pp">Password :</label>
+        <input type="password" id="password" name="password" required minlength="4" maxlength="4" size="10">
+
+        <button onclick="getUser()">POST 요청 클릭</button>
+        <div id="userInfo"></div>
+        <script>
+            function getUser() {
+                const comment = document.getElementById('comment').value;
+                const rating = document.getElementById('rating').value;
+                const password = document.getElementById('password').value;
+
+                const config = {
+                    method: "post",
+                    body: JSON.stringify({
+                      "comment" : comment,
+                      "rating" : rating,
+                      "password" : password
+                    })
+                  };
+                  fetch("/api/rate/", config)
+                    .then(response => response.json())
+                    .then(data => {
+                      const userInfo = document.getElementById("userInfo");
+                      obj = data.success
+                      const t = document.createElement("div");
+                      t.textContent = obj;
+                      userInfo.appendChild(t);
+                    })
+                    .catch(error => console.log("fetch 에러!"));
+                
+                }
+        </script>
+      </div>
+-->
+      <br>
+
+<!-- gpt 한테 "해줘" 한거 -->
+      <div id=abc>
+          <style>
+          form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 50px;
+            background-color: #f2f2f2;
+            padding: 50px;
+            border-radius: 10px;
+          }
+
+          label {
+            font-size: 20px;
+            margin-bottom: 10px;
+          }
+
+          input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px lightgray;
+          }
+          input[type="password"] {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px lightgray;
+          }
+
+          #submit-button {
+            width: 100%;
+            padding: 15px;
+            background-color: lightblue;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 2px 2px 5px lightgray;
+            transition: all 0.2s ease-in-out;
+          }
+
+          #submit-button:hover {
+            background-color: blue;
+            box-shadow: 2px 2px 10px lightgray;
+          }
+
+          #response {
+            width: 100%;
+            margin: 50px 0;
+            padding: 20px;
+            background-color: lightgray;
+            font-size: 16px;
+            border-radius: 5px;
+          }
+
+          #title {
+            text-align: center;
+            font-size: 36px;
+            font-weight: bold;
+            color: orange;
+            margin: 20px;
+          }
+        </style>
+        
+        <div id="title">THIS IS RATE PAGE!!!</div>
+        <form>
+          <label for="input1">comment:</label>
+          <input type="text" id="input1" name="input1">
+          
+          <label for="input2">stars:</label>
+          <input type="text" id="input2" name="input2">
+          
+          <label for="input3">password:</label>
+          <input type="password" id="input3" name="input3">
+          
+          <button type="button" id="submit-button">Submit</button>
+        </form>
+
+        <div id="response"></div>
+
+        <script>
+          const submitButton = document.getElementById("submit-button");
+          submitButton.addEventListener("click", () => {
+            const input1 = document.getElementById("input1").value;
+            const input2 = document.getElementById("input2").value;
+            const input3 = document.getElementById("input3").value;
+
+            const data = {
+              input1,
+              input2,
+              input3
+            };
+
+            fetch("/api/rate/", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                              "comment" : input1,
+                              "rating" : input2,
+                              "password" : input3
+                            })
+            })
+              .then(response => response.json())
+              .then(data => {
+                const responseDiv = document.getElementById("response");
+                responseDiv.innerHTML = JSON.stringify(data);
+              });
+          });
+        </script>
+      </div>
+
+    </body>
+  
+</html>

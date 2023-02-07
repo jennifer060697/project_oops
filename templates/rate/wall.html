@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+    </head>
+
+    <body>
+        wall_page
+        <br>
+        <div>
+          <button onclick="getUser()">GET 요청 클릭</button>
+          <div id="userInfo"></div>
+          <script>
+              function getUser() {
+                  const config = {
+                    method: "get"
+                  };
+                  fetch("/api/rate/", config)
+                    .then(response => response.json())
+                    .then(data => {
+                      const userInfo = document.getElementById("userInfo");
+                      obj = data.comments
+                      for(const key in obj) {
+                        const t = document.createElement("div");
+                        t.textContent = obj[key].id;
+                        userInfo.appendChild(t);
+                        const tt = document.createElement("div");
+                        tt.textContent = obj[key].comment;
+                        userInfo.appendChild(tt);
+                      }
+                    })
+                    .catch(error => console.log("fetch 에러!"));
+                  }
+          </script>
+        </div>
+
+
+
+
+        <br>
+        <div> - 수정 - </div>
+        <label for="ID">ID :</label>
+        <input type="text" id="ID" name="ID" maxlength="100" size="10">
+
+        <label for="comment">Comment :</label>
+        <input type="text" id="comment" name="comment" maxlength="100" size="10">
+
+        <label for="password">Password :</label>
+        <input type="password" id="password" name="password" required minlength="4" maxlength="4" size="10">
+        <br>
+        <button onclick="getUser2()"> n PUT 요청 클릭</button>
+        <br>
+        <div id="userInfo2"></div>
+        <script>
+            function getUser2() {
+              const ID = document.getElementById('ID').value;
+              const comment = document.getElementById('comment').value;
+              const password = document.getElementById('password').value;
+
+                const config = {
+                  method: "put",
+                  body: JSON.stringify({
+                    "comment" : comment,
+                    "password" : password
+                  })
+                };
+                fetch(`/api/rate/${ID}/`, config)
+                  .then(response => response.json())
+                  .then(data => {
+                    const userInfo = document.getElementById("userInfo2");
+                    obj = data.modify_success
+                    const t = document.createElement("div");
+                    t.textContent = obj;
+                    userInfo.appendChild(t);
+                  })
+                  .catch(error => console.log("fetch 에러!"));
+                }
+        </script>
+
+
+        <br>
+        <div> - 삭제 - </div>
+        <label for="ID2">ID :</label>
+        <input type="text" id="ID2" name="ID2" maxlength="100" size="10">
+
+        <label for="password2">Password :</label>
+        <input type="password" id="password2" name="password2" required minlength="4" maxlength="4" size="10">
+        <br>
+        <button onclick="getUser3()"> n POST 요청 클릭</button>
+        <br>
+        <div id="userInfo3"></div>
+        <script>
+            function getUser3() {
+              const ID = document.getElementById('ID2').value;
+              const password = document.getElementById('password2').value;
+
+                const config = {
+                  method: "post",
+                  body: JSON.stringify({
+                    "password" : password
+                  })
+                };
+                fetch(`/api/rate/${ID}/`, config)
+                  .then(response => response.json())
+                  .then(data => {
+                    const userInfo = document.getElementById("userInfo3");
+                    obj = data.modify_success
+                    const t = document.createElement("div");
+                    t.textContent = obj;
+                    userInfo.appendChild(t);
+                  })
+                  .catch(error => console.log("fetch 에러!"));
+                }
+        </script>
+    </body>
+</html>
