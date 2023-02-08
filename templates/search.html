@@ -26,19 +26,15 @@
                     .then(response => response.json())
                     .then(data => {
                         const userInfo = document.getElementById("userInfo");
-                        obj = data.station;
+                        obj = data.name;
                         console.log(obj)
-                        const t = document.createElement("div");
+                        const t = document.createElement("pre");
                         t.textContent = obj;
                         userInfo.appendChild(t);
                     })
                     .catch(error => {
                         console.log("fetch 에러!");
                         const userInfo = document.getElementById("userInfo");
-                        obj = data.message;
-                        const t = document.createElement("div");
-                        t.textContent = obj;
-                        userInfo.appendChild(t);
                     });
                 
                 }

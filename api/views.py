@@ -2,13 +2,14 @@ from django.http import JsonResponse, HttpResponse
 from django.views.generic import View
 from django.views.generic.list import BaseListView
 from django.views.generic.detail import BaseDetailView
-from main.models import Stores, Search
+from main.models import Stores, Search, SearchWithFeedBack
 from rate.models import Rate
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 import json
 from django.forms.models import model_to_dict
 from django.core.paginator import Paginator
+from api.apps import SearchConfig
 
 
 # from blog.models import Post
@@ -21,28 +22,74 @@ class ApiSearch(View) :
     
     def post(self, request) :
         """
-        잔뜩 잔뜩 수정해야하는 부분. 모델도 넣고, 식당별 점수도 매기고, 점수별로 정렬해주고 json 을 돌려줘야함.
-        
-        search 필드와 식당명이 일치하는 데이터를 돌려준다.
-        search 필드 내용을 저장한다.
+        로드 되어있는 모델과 식당 정보를 이용
+        사용자 인풋 -> 모델 -> 식당정보와 연산해서 정렬 -> 식당정보 top 5 리턴?
+        사용자 인풋 db에 저장
         """
+
         r_dict = json.loads(request.body)
         
+        # request json 형식 확인
         if not set(r_dict.keys()) == set(['search']) : 
             print(r_dict.keys())
-            print("???")
             return HttpResponse('REQUEST JSON FIELD ERROR', status = 400) # status Bad Request
 
+        # 알고리즘 파트
         search=r_dict['search']
-        try :
-            res_dict = model_to_dict(Stores.objects.get(name=search))
-        except :
-            res_dict = {'message' : f"STORE {search} NOT IN DATABASE"}
+   
+        # input에 대한 모델 연산, 딕셔너리화
+        iscores = SearchConfig.model.predict(search)
+        key_list = ['price','cute','wide','corps','satisfaction','modern','ambience','visual','cozy','clean','service','exoticfood','exotictheme','classic','alone']
+        input_scores = {}
+        for ind, score in enumerate(iscores) :
+            input_scores[key_list[ind]] = score
+        
+        # 스토어 정보 dict 배열
+        stores_info = SearchConfig.stores_inf
+        # 점수 연산 (지금은 L1 norm)
+        for s in stores_info :
+            score = 0
+            for k in key_list :
+                score += abs(s[k] - input_scores[k])
+            s['score'] = score
+        # 정렬
+        sorted_stores = sorted(stores_info, key=(lambda x: x['score']))
+        # 상위 5개
+        res_str = ''
+        for s in sorted_stores[:5] :
+            print(s['name'])
+            res_str += (s['name']+'\n')
+
+        # try :
+        #     res_dict = model_to_dict(Stores.objects.get(name=search))
+        # except :
+        #     res_dict = {'message' : f"STORE {search} NOT IN DATABASE"}
 
         new_search = { 'content' : search }
         Search.objects.create(**new_search)
 
-        return JsonResponse(data = res_dict, safe = True, status = 200)
+        return JsonResponse(data = {'name':res_str}, safe = True, status = 200)
+    
+    def put(self, request) :
+        """
+        평가 받은 리뷰들을 따로 한번 더 저장
+        """
+        r_dict = json.loads(request.body)
+        
+        # request json 형식 확인
+        if not set(r_dict.keys()) == set(['search', 'thumbs_up']) : 
+            print(r_dict.keys())
+            return HttpResponse('REQUEST JSON FIELD ERROR', status = 400) # status Bad Request
+
+        # db 저장
+        try :
+            new_search = { 'content' : r_dict['search'], 'thumbs': r_dict['thumbs_up']}
+            SearchWithFeedBack.objects.create(**new_search)
+            return JsonResponse(data = {'success':True}, safe = True, status = 200)
+        except :
+            return JsonResponse(data = {'success':False}, safe = True, status = 400)
+
+
 
 class ApiRate(View) :
     @method_decorator(csrf_exempt)

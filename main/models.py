@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.timezone import datetime
 
 class Stores(models.Model) :
     # category = models.ForeignKey('Category', on_delete=models.SET_NULL, blank = True, null = True) # 연결된 카테고리가 사라지면 null 로 변경
@@ -23,7 +24,19 @@ class Stores(models.Model) :
 
 class Search(models.Model) :
     content = models.CharField('CONTENT', max_length=200) # 검색어, 비어있을수없음
-    create_date = models.DateTimeField('CREATE_DATE', auto_now_add=True) # 생성날짜
+    create_date = models.DateTimeField('CREATE_DATE', default=datetime.now) # 생성날짜
+
+    @property
+    def short_content(self) :
+        return self.content[:10]
+
+    def __str__(self) :
+        return self.short_content
+
+class SearchWithFeedBack(models.Model) :
+    content = models.CharField('CONTENT', max_length=200) # 검색어, 비어있을수없음
+    create_date = models.DateTimeField('CREATE_DATE', default=datetime.now) # 생성날짜
+    thumbs = models.BooleanField('THUMBS') # 비어있을수없음
 
     @property
     def short_content(self) :
