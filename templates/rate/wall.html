@@ -7,6 +7,7 @@
     <body>
         wall_page
         <br>
+
         <div>
           <button onclick="getUser()">GET 요청 클릭</button>
           <div id="userInfo"></div>
@@ -33,6 +34,59 @@
                   }
           </script>
         </div>
+
+        <br><br>
+
+
+  <div>
+    <style>
+      .item {
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: lightgray;
+        border-radius: 5px;
+        text-align: center;
+      }
+      button {
+        padding: 10px 20px;
+        margin: 10px;
+        background-color: lightblue;
+        color: white;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+      }
+    </style>
+    <script>
+      async function getData(page) {
+        const response = await fetch(`/api/rate/page/${page}`);
+        const data = await response.json();
+        console.log(data.comments)
+        return data.comments;
+      }
+
+      async function displayData(page) {
+        const data = await getData(page);
+        let content = "";
+        for (const item of data) {
+          content += `<div class="item">${item.comment}</div>`;
+        }
+        document.getElementById("items").innerHTML = content;
+      }
+    </script>
+  </div>
+  <div>
+    <div id="items"></div>
+    <button onclick="displayData(1)">Page 1</button>
+    <button onclick="displayData(2)">Page 2</button>
+    <button onclick="displayData(3)">Page 3</button>
+    <button onclick="displayData(4)">Page 4</button>
+    <button onclick="displayData(5)">Page 5</button>
+    <!-- Add buttons for additional pages as needed -->
+  </div>
+
+
+
 
 
 
