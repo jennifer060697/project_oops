@@ -55,10 +55,26 @@ class ApiSearch(View) :
         # 정렬
         sorted_stores = sorted(stores_info, key=(lambda x: x['score']))
         # 상위 5개
-        res_str = ''
-        for s in sorted_stores[:5] :
-            print(s['name'])
-            res_str += (s['name']+'\n')
+        res_dict = {
+            "result_tags" : [],
+            "main_store" : {
+                "name" : '',
+                "station" : '',
+                "line" : [],
+                "tags" : [],
+                "walking_time" : ''
+            },
+            "sub_stores" : []
+        }
+        main_store = sorted_stores[0]
+        res_dict["main_store"]["name"] = main_store['name']
+        res_dict["main_store"]["station"] = main_store["station"]
+        res_dict["main_store"]["line"] = main_store["lines"].split(',')
+        res_dict["main_store"]["walking_time"] = main_store["walking_time"]
+        for s in sorted_stores[1:5] :
+            res_dict["sub_stores"].append(s['name'])
+
+        print(res_dict)
 
         # try :
         #     res_dict = model_to_dict(Stores.objects.get(name=search))
@@ -68,7 +84,7 @@ class ApiSearch(View) :
         new_search = { 'content' : search }
         Search.objects.create(**new_search)
 
-        return JsonResponse(data = {'name':res_str}, safe = True, status = 200)
+        return JsonResponse(data = res_dict, safe = True, status = 200)
     
     def put(self, request) :
         """
@@ -133,11 +149,11 @@ class ApiRatePage(View) :
 
     def get(self, request, page) :
         """
-        코멘트 전부다 모아서 list 로 뭉쳐서 반환
+        페이지네이션
         """
         rate_objs = Rate.objects.all()
-        end_page = (len(rate_objs)+5)//6
-        paginator = Paginator(rate_objs, 6)
+        end_page = (len(rate_objs)+5)//8
+        paginator = Paginator(rate_objs, 8)
         objs = paginator.get_page(page)
         res_list = []
         for obj in objs :

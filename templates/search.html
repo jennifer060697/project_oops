@@ -26,7 +26,7 @@
                     .then(response => response.json())
                     .then(data => {
                         const userInfo = document.getElementById("userInfo");
-                        obj = data.name;
+                        obj = data;
                         console.log(obj)
                         const t = document.createElement("pre");
                         t.textContent = obj;
